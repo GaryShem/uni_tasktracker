@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Roommate App</string>
+    <string name="title_activity_chores">Chores</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_anonymous_user">AnonymousUserActivity</string>
+</resources>
