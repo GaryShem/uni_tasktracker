@@ -5,20 +5,22 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.UUID;
 
 @IgnoreExtraProperties
-class Chore implements Comparable<Chore> {
+class Bill implements Comparable<Bill> {
 
     private String description;
     private boolean completed;
+    private double amount;
     private String uuid;
     private Long time;
 
-    public Chore(String description) {
+    public Bill(String description, double amount) {
         this.description = description;
         this.uuid = UUID.randomUUID().toString();
+        this.amount = amount;
         time = System.currentTimeMillis();
     }
 
-    public Chore() {
+    public Bill() {
     }
 
     public String getDescription() {
@@ -57,10 +59,18 @@ class Chore implements Comparable<Chore> {
         time = System.currentTimeMillis();
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     @Override
-    public int compareTo(Chore chore) {
-        if (completed == chore.isCompleted()) {
-            return -time.compareTo(chore.getTime());
+    public int compareTo(Bill bill) {
+        if (completed == bill.isCompleted()) {
+            return -time.compareTo(bill.getTime());
         }
         if (completed) {
             return 1;

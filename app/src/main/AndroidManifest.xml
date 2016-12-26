@@ -19,20 +19,14 @@
             android:name=".ChoresActivity"
             android:label="@string/title_activity_chores" />
         <activity
-            android:name=".BillActivity"
-            android:label="Bills" />
+            android:name=".BillsActivity"
+            android:label="@string/title_activity_bills" />
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_register" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".AnonymousUserActivity"
-            android:label="@string/title_activity_anonymous_user"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_login" />
     </application>
 
 </manifest>

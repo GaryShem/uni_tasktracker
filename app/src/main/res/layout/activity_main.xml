@@ -12,28 +12,48 @@
         android:layout_weight="3" />
 
     <Button
-        android:id="@+id/addBTN"
-        android:layout_width="wrap_content"
+        android:id="@+id/chores_btn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        android:text="Add Roommate" />
+        android:onClick="loadChoreList"
+        android:text="@string/chores" />
 
     <Button
-        android:id="@+id/choresBTN"
-        android:layout_width="wrap_content"
+        android:id="@+id/bills_btn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        android:text="Chores"
-        android:onClick="loadChoreList"/>
+        android:onClick="loadBillList"
+        android:text="@string/bills" />
 
     <Button
-        android:id="@+id/billsBTN"
-        android:layout_width="wrap_content"
+        android:id="@+id/logout_btn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Bills" />
+        android:onClick="logOut"
+        android:text="@string/log_out" />
+
+    <Button
+        android:id="@+id/register_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:onClick="registerClick"
+        android:text="@string/register" />
+
+    <Button
+        android:id="@+id/login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_weight="0"
+        android:onClick="loginClick"
+        android:text="@string/log_in" />
 
     <View
         android:layout_width="match_parent"

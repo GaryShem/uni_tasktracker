@@ -1,14 +1,15 @@
 package com.warriorrat.roommateapp;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,17 +22,18 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ChoresActivity extends AppCompatActivity {
 
     private DatabaseReference choresRef;
-    ChildEventListener childEventListener;
-    ArrayList<Chore> choresList;
-    ListView listView;
-    ChoreListAdapter choreAdapter;
+    private ChildEventListener childEventListener;
+    private ArrayList<Chore> choresList;
+    private ListView listView;
+    private ChoreListAdapter choreAdapter;
     private static final String TAG = ChoresActivity.class.getSimpleName();
 
-    @Override
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chores);
@@ -39,20 +41,53 @@ public class ChoresActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.chore_list);
         choreAdapter = new ChoreListAdapter(ChoresActivity.this, choresList);
         listView.setAdapter(choreAdapter);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(ChoresActivity.this);
+                final EditText edittext = new EditText(ChoresActivity.this);
+                final Chore editedChore = choresList.get(i);
+                alert.setMessage(R.string.edit_chore_description);
+                edittext.setText(choresList.get(i).getDescription());
+                alert.setView(edittext);
+                edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT);
+                alert.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String choreDescription = edittext.getText().toString().trim();
+                        editedChore.setDescription(choreDescription);
+                        pushChoreUpdate(editedChore);
+                        choreAdapter.notifyDataSetChanged();
+                    }
+                });
+
+                alert.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        choresList.remove(i);
+                        deleteChore(editedChore.getUuid());
+                        choreAdapter.notifyDataSetChanged();
+                    }
+                });
+                AlertDialog alertWindow = alert.create();
+                alertWindow.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                alertWindow.show();
+                return true;
+            }
+        });
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildAdded:" + dataSnapshot.toString());
-                Toast.makeText(ChoresActivity.this, "Child added", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "onChildAdded:" + dataSnapshot.toString());
+//                Toast.makeText(ChoresActivity.this, R.string.chore_added, Toast.LENGTH_SHORT).show();
                 Chore newChore = getChoreFromSnapshot(dataSnapshot);
                 choresList.add(newChore);
+                Collections.sort(choresList);
                 choreAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildChanged:" + dataSnapshot.toString());
-                Toast.makeText(ChoresActivity.this, "Child changed", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "onChildChanged:" + dataSnapshot.toString());
+//                Toast.makeText(ChoresActivity.this, R.string.chore_changed, Toast.LENGTH_SHORT).show();
                 Chore changedChore = getChoreFromSnapshot(dataSnapshot);
                 for (Chore chore : choresList) {
                     if (changedChore.getUuid().equals(chore.getUuid())) {
@@ -61,13 +96,14 @@ public class ChoresActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                Collections.sort(choresList);
                 choreAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved:" + dataSnapshot.toString());
-                Toast.makeText(ChoresActivity.this, "Child removed", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "onChildRemoved:" + dataSnapshot.toString());
+//                Toast.makeText(ChoresActivity.this, R.string.chore_removed, Toast.LENGTH_SHORT).show();
                 Chore deletedChore = getChoreFromSnapshot(dataSnapshot);
                 for (int i = 0; i < choresList.size(); i++) {
                     if (choresList.get(i).getUuid().equals(deletedChore.getUuid())) {
@@ -80,49 +116,47 @@ public class ChoresActivity extends AppCompatActivity {
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildMoved:" + dataSnapshot.toString());
-                Toast.makeText(ChoresActivity.this, "Child moved", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "onChildMoved:" + dataSnapshot.toString());
+//                Toast.makeText(ChoresActivity.this, R.string.chore_moved, Toast.LENGTH_SHORT).show();
+                Collections.sort(choresList);
                 choreAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "postComments:onCancelled", databaseError.toException());
-                Toast.makeText(ChoresActivity.this, "Failed to do something", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChoresActivity.this, R.string.failed_to_do_something, Toast.LENGTH_SHORT).show();
             }
         };
     }
 
     private Chore getChoreFromSnapshot(DataSnapshot snapshot) {
-        Chore result = new Chore();
-        result.setCompleted((boolean) snapshot.child("completed").getValue());
-        result.setDescription((String) snapshot.child("description").getValue());
-        result.setUuid((String) snapshot.child("uuid").getValue());
+        Chore result = snapshot.getValue(Chore.class);
         return result;
     }
 
     public void createChore(View v) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(ChoresActivity.this);
-        alert.setMessage("Enter chore description");
+        edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT);
+        alert.setMessage(R.string.enter_chore_description);
 
         alert.setView(edittext);
-
-        alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-                String choreDescription = edittext.getText().toString();
-                Util.pushChoreUpdate(new Chore(choreDescription));
+                String choreDescription = edittext.getText().toString().trim();
+                pushChoreUpdate(new Chore(choreDescription));
             }
         });
 
-        alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                Toast.makeText(ChoresActivity.this, "Chore creation cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChoresActivity.this, R.string.chore_creation_cancelled, Toast.LENGTH_SHORT).show();
             }
         });
-
-        alert.show();
+        AlertDialog alertWindow = alert.create();
+        alertWindow.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        alertWindow.show();
     }
 
     @Override
@@ -130,12 +164,43 @@ public class ChoresActivity extends AppCompatActivity {
         super.onResume();
         choresRef = Util.getChoresRef();
         choresRef.addChildEventListener(childEventListener);
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         choresRef.removeEventListener(childEventListener);
+    }
+
+    public static void pushChoreUpdate(final Chore chore) {
+        DatabaseReference singleChoreRef = Util.getChoresRef().child(chore.getUuid());
+        singleChoreRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                mutableData.setValue(chore);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                Log.d(ContentValues.TAG, "postTransaction:onComplete:" + databaseError);
+            }
+        });
+    }
+
+    private static void deleteChore(String uuid) {
+        Util.getChoresRef().child(uuid).runTransaction(new Transaction.Handler() {
+
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                mutableData.setValue(null);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                Log.d(ContentValues.TAG, "postTransaction:onComplete:" + databaseError);
+            }
+        });
     }
 }

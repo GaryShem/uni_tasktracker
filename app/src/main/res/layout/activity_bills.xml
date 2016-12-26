@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.warriorrat.roommateapp.ChoresActivity">
+    tools:context="com.warriorrat.roommateapp.BillsActivity">
 
     <ListView
-        android:id="@+id/chore_list"
+        android:id="@+id/bill_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -22,7 +22,7 @@
         android:layout_margin="8dp"
         android:gravity="center"
         android:layout_gravity="center|bottom"
-        android:onClick="createChore"
-        android:text="@string/new_chore" />
+        android:onClick="createBill"
+        android:text="@string/new_bill" />
 
 </LinearLayout>

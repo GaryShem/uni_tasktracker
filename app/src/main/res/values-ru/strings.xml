@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Трекер Задач</string>
+    <string name="add">Добавить</string>
+    <string name="authentication_failed">Ошибка авторизации</string>
+    <string name="bill_added">Счёт добавлен</string>
+    <string name="bill_amount">Сумма</string>
+    <string name="bill_changed">Счёт изменён</string>
+    <string name="bill_creation_cancelled">Создание счёта отменено</string>
+    <string name="bill_moved">Счёт перемещён</string>
+    <string name="bill_removed">Счёт удалён</string>
+    <string name="bills">Счета</string>
+    <string name="cancel">Отмена</string>
+    <string name="chore_added">Задача добавлена</string>
+    <string name="chore_changed">Задача изменена</string>
+    <string name="chore_creation_cancelled">Создание задачи отменено</string>
+    <string name="chore_moved">Задача перемещена</string>
+    <string name="chore_removed">Задача удалена</string>
+    <string name="chores">Задачи</string>
+    <string name="completed">Выполнено</string>
+    <string name="delete">Удалить</string>
+    <string name="description">Описание</string>
+    <string name="edit">Изменить</string>
+    <string name="edit_chore_description">Изменить описание задачи</string>
+    <string name="email">Email</string>
+    <string name="enter_bill_description">Введите описание счёта</string>
+    <string name="enter_chore_description">Введите описание задачи</string>
+    <string name="failed_to_do_something">Ошибка синхронизации</string>
+    <string name="incorrect_amount_format">Неверный формат суммы</string>
+    <string name="log_in">Войти</string>
+    <string name="log_out">Выйти</string>
+    <string name="new_bill">Создать счёт</string>
+    <string name="new_chore">Создать задачу</string>
+    <string name="password">Пароль</string>
+    <string name="register">Регистрация</string>
+    <string name="register_and_log_in">Зарегистрироваться и войти</string>
+    <string name="title_activity_bills">Счета</string>
+    <string name="title_activity_chores">Задачи</string>
+    <string name="title_activity_login">Вход</string>
+    <string name="title_activity_register">Регистрация</string>
+</resources>
